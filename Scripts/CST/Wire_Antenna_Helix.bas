@@ -8,8 +8,8 @@ Sub Main
 	' Set up Frequency Sweep
 	Dim Fstart As Double, Fend As Double, Fstep As Double
 	Dim Fnum As Integer, cc As Integer, F() As String
-		Fend = 130
-		Fstart = 120
+		Fend = 126
+		Fstart = 124
 		Fstep = 1
 		Fnum = Int(((Fend - Fstart)/Fstep) + 1)
 	ReDim F(Fnum)
@@ -17,44 +17,44 @@ Sub Main
 
 	''2) Set current direction(path)
 	'' Create helix wire
-	Dim h As String,ra As String,ri As String,phi As String,N As String,O As String, cPathStr As String, wPathStr As String
-		h  = "10"
-		ra = "5"
-		ri = "5"
+	Dim h As String,ra As String,ri As String,phi As String,N As String,O As String, cPathStr As String, wPathStr As String, wT As String
+		' wT = "0.00051"
+		wT = "0.25"
+		ra = "1"
+		ri = "1"
 		phi = "30"
 		N = "10"
 		O = "1"
+		h  = 1.1*CStr(2*CDbl(wT)*CDbl(N))
+		' MsgBox h
 		cPathStr = "currentWire"
 		wPathStr = "Wire"
-	'SetCoilWireCurrent(h,ra,ri,phi,N,O,cPathStr)
-	'Dim circleStr As String, I As String
-	'' Set current along helix wire
-	'	circleStr = "c"
-	'	I = "1"
-	'SetCurrent(circleStr,cPathStr,I)
-
+	SetCoilWireCurrent(h,ra,ri,phi,N,O,cPathStr)
+	Dim circleStr As String, I As String
+	'Set current along helix wire
+		circleStr = "c"
+		I = "1"
+	SetCurrent(circleStr,cPathStr,I)
 	' 3) Set vacuum objects around current(path) to increase meshing
 	SetCoilWireCurrent(h,ra,ri,phi,N,O,cPathStr)
-	Dim wT As String
-	' wT = "0.00051"
-	wT = "1"
 	ThickenWire(cPathStr,wT)
 	'4) Set up Boundary Box
 	Dim xminb, yminb, zminb, xmaxb, ymaxb, zmaxb
-		xminb = 10
-		yminb = 10
-		zminb = 10
-		xmaxb = 10
-		ymaxb = 10
-		zmaxb = 10
-	'SetBoundBox (xminb,yminb,zminb,xmaxb,ymaxb,zmaxb)
+		xminb = CDbl(h)
+		yminb = CDbl(h)
+		zminb = CDbl(h)
+		xmaxb = CDbl(h)
+		ymaxb = CDbl(h)
+		zmaxb = CDbl(h)
+	SetBoundBox(xminb,yminb,zminb,xmaxb,ymaxb,zmaxb)
+
 
 End Sub
 
 Sub SetUnit ()
 	'set the units
 	With Units
-	    .Geometry "mm"
+	    .Geometry "m"
 	    .Frequency "kHz"
 	    .Voltage "V"
 	    .Resistance "Ohm"
@@ -101,57 +101,160 @@ Sub SetSolver(ByRef  F() As String,  Fstart As Double, Fend As Double, Fstep As 
 	     .MaximumNumberOfCPUDevices "2"
 	     .UseDistributedComputing "False"
 	End With
+	UseDistributedComputingForParameters "False"
+	MaxNumberOfDistributedComputingParameters "2"
+	UseDistributedComputingMemorySetting "False"
+	MinDistributedComputingMemoryLimit "0"
+	UseDistributedComputingSharedDirectory "False"
+
 End Sub
 
 Sub SetBoundBox (xminb As Double,yminb As Double,zminb As Double,xmaxb As Double,ymaxb As Double,zmaxb As Double)
-	Plot.DrawBox True
 	With Background
 	     .ResetBackground
-	     .Type "Normal"
-	     .Epsilon "1.0"
-	     .Mue "1.0"
+	     .XminSpace xminb
+	     .XmaxSpace xmaxb
+	     .YminSpace yminb
+	     .YmaxSpace ymaxb
+	     .ZminSpace zminb
+	     .ZmaxSpace zmaxb
+	     .ApplyInAllDirections "True"
+	End With
+
+	With Material
+	     .Reset
 	     .Rho "1.204"
 	     .ThermalType "Normal"
 	     .ThermalConductivity "0.026"
 	     .HeatCapacity "1.005"
-	     .XminSpace xminb * Units.GetGeometrySIToUnit()
-	     .XmaxSpace xmaxb * Units.GetGeometrySIToUnit()
-	     .YminSpace yminb * Units.GetGeometrySIToUnit()
-	     .YmaxSpace ymaxb * Units.GetGeometrySIToUnit()
-	     .ZminSpace zminb * Units.GetGeometrySIToUnit()
-	     .ZmaxSpace zmaxb * Units.GetGeometrySIToUnit()
-	     .ApplyInAllDirections "True"
+	     .DynamicViscosity "1.84e-5"
+	     .Emissivity "0.0"
+	     .MetabolicRate "0.0"
+	     .VoxelConvection "0.0"
+	     .BloodFlow "0"
+	     .MechanicsType "Unused"
+	     .FrqType "all"
+	     .Type "Normal"
+	     .MaterialUnit "Frequency", "Hz"
+	     .MaterialUnit "Geometry", "m"
+	     .MaterialUnit "Time", "s"
+	     .MaterialUnit "Temperature", "Kelvin"
+	     .Epsilon "1.00059"
+	     .Mu "1.0"
+	     .Sigma "0.0"
+	     .TanD "0.0"
+	     .TanDFreq "0.0"
+	     .TanDGiven "False"
+	     .TanDModel "ConstSigma"
+	     .EnableUserConstTanDModelOrderEps "False"
+	     .ConstTanDModelOrderEps "1"
+	     .SetElParametricConductivity "False"
+	     .ReferenceCoordSystem "Global"
+	     .CoordSystemType "Cartesian"
+	     .SigmaM "0"
+	     .TanDM "0.0"
+	     .TanDMFreq "0.0"
+	     .TanDMGiven "False"
+	     .TanDMModel "ConstSigma"
+	     .EnableUserConstTanDModelOrderMu "False"
+	     .ConstTanDModelOrderMu "1"
+	     .SetMagParametricConductivity "False"
+	     .DispModelEps  "None"
+	     .DispModelMu "None"
+	     .DispersiveFittingSchemeEps "Nth Order"
+	     .MaximalOrderNthModelFitEps "10"
+	     .ErrorLimitNthModelFitEps "0.1"
+	     .UseOnlyDataInSimFreqRangeNthModelEps "False"
+	     .DispersiveFittingSchemeMu "Nth Order"
+	     .MaximalOrderNthModelFitMu "10"
+	     .ErrorLimitNthModelFitMu "0.1"
+	     .UseOnlyDataInSimFreqRangeNthModelMu "False"
+	     .UseGeneralDispersionEps "False"
+	     .UseGeneralDispersionMu "False"
+	     .NLAnisotropy "False"
+	     .NLAStackingFactor "1"
+	     .NLADirectionX "1"
+	     .NLADirectionY "0"
+	     .NLADirectionZ "0"
+	     .Colour "0.6", "0.6", "0.6"
+	     .Wireframe "False"
+	     .Reflection "False"
+	     .Allowoutline "True"
+	     .Transparentoutline "False"
+	     .Transparency "0"
+	     .ChangeBackgroundMaterial
 	End With
+
 	With Boundary
-	     .Xmin "electric"
-	     .Xmax "electric"
-	     .Ymin "electric"
-	     .Ymax "electric"
-	     .Zmin "electric"
-	     .Zmax "electric"
-	     .Xsymmetry "none"
-	     .Ysymmetry "none"
-	     .Zsymmetry "none"
+     .Xmin "open"
+     .Xmax "open"
+     .Ymin "open"
+     .Ymax "open"
+     .Zmin "open"
+     .Zmax "open"
+     .Xsymmetry "none"
+     .Ysymmetry "none"
+     .Zsymmetry "none"
+     .ApplyInAllDirections "True"
 	End With
+
 	With Mesh
 	     .MeshType "Tetrahedral"
-	     .RatioLimit "50"
-	     .MinimumStepNumber "20"
-	     .MinimumStepNumberTet "5"
-	     .SetAutomeshRefineDielectricsType "None"
-	     .DensityTransitions "0.8"
+	     .SetCreator "Low Frequency"
 	End With
 	With MeshSettings
-	     .SetMeshType "Hex"
-	     .Set "StepsPerBoxNear", "20"
-	     .Set "StepsPerBoxFar", "10"
 	     .SetMeshType "Tet"
+	     .Set "Version", 1%
+	     'MAX CELL - WAVELENGTH REFINEMENT
+	     .Set "StepsPerWaveNear", "4"
+	     .Set "StepsPerWaveFar", "4"
+	     .Set "PhaseErrorNear", "0.02"
+	     .Set "PhaseErrorFar", "0.02"
+	     .Set "CellsPerWavelengthPolicy", "automatic"
+	     'MAX CELL - GEOMETRY REFINEMENT
+	     .Set "StepsPerBoxNear", "20"
 	     .Set "StepsPerBoxFar", "5"
-	     .SetMeshType "Plane"
-	     .Set "StepsPerBoxFar", "5"
+	     .Set "ModelBoxDescrNear", "maxedge"
+	     .Set "ModelBoxDescrFar", "maxedge"
+	     'MIN CELL
+	     .Set "UseRatioLimit", "0"
+	     .Set "RatioLimit", "100"
+	     .Set "MinStep", "0"
+	     'MESHING METHOD
+	     .SetMeshType "Unstr"
+	     .Set "Method", "0"
 	End With
-	With MeshAdaption3D
-	     .SetLFAdaptionStrategy "Energy"
+	With MeshSettings
+	     .SetMeshType "Tet"
+	     .Set "CurvatureOrder", "1"
+	     .Set "CurvatureOrderPolicy", "automatic"
+	     .Set "CurvRefinementControl", "NormalTolerance"
+	     .Set "NormalTolerance", "22.5"
+	     .Set "SrfMeshGradation", "1.5"
+	     .Set "SrfMeshOptimization", "1"
+	End With
+	With MeshSettings
+	     .SetMeshType "Unstr"
+	     .Set "UseMaterials",  "0"
+	     .Set "MoveMesh", "0"
+	End With
+	With MeshSettings
+	     .SetMeshType "Tet"
+	     .Set "UseAnisoCurveRefinement", "1"
+	     .Set "UseSameSrfAndVolMeshGradation", "1"
+	     .Set "VolMeshGradation", "1.5"
+	     .Set "VolMeshOptimization", "1"
+	End With
+	With MeshSettings
+	     .SetMeshType "Unstr"
+	     .Set "SmallFeatureSize", "0"
+	     .Set "CoincidenceTolerance", "1e-06"
+	     .Set "SelfIntersectionCheck", "1"
+	     .Set "OptimizeForPlanarStructures", "0"
+	End With
+	With Mesh
+	     .SetParallelMesherMode "Tet", "maximum"
+	     .SetMaxParallelMesherThreads "Tet", "1"
 	End With
 End Sub
 
@@ -165,7 +268,7 @@ Sub SetCurrent (circleStr As String, wirePath As String, I As String)
 		 .Current I
 	     .Phase "0.0"
 	     .PathCurve "3D-Linear-Spiral:" & wirePath
-	     MsgBox "3D-Linear-Spiral:" & wirePath
+	     ' MsgBox "3D-Linear-Spiral:" & wirePath
 	     .Add
 	End With
 End Sub
@@ -247,11 +350,22 @@ Sub ThickenWire(wireName As String,wT As String)
 	     .Radius wT
 	     .Type "CurveWire"
 	     .Curve "3D-Linear-Spiral:" & wireName
-	     .Material "Vacuum"
+		 .Material "Copper (annealed)"
+	     ' .Material "Vacuum"
 	     .SolidWireModel "True"
 	     .Termination "Natural"
 	     .Mitering "NewMiter"
 	     .AdvancedChainSelection "True"
 	     .Add
 	End With
+
+	With Wire
+     .Reset
+     .SolidName "component1:wire1"
+     .Name "wire1"
+     .Folder "3D-Linear-Spiral"
+     .KeepWire "False"
+     .ConvertToSolidShape
+	End With
+
 End Sub
