@@ -50,17 +50,41 @@ function [X,Y,Z,BX,BY,BZ,normB] = CalcBFields_Wire_Antenna(I,xS,yS,zS,bBox,Ns)
     % Ns = 20;         % Total segments in space <scalar> 
     mu0 = 4*pi*1e-7; % free space permeability <scalar> [H/m]
     dS = 1e9;        % filament max discretization step [m]
-    xdis = bBox(1);
-    ydis = bBox(2);
-    zdis = bBox(3);
+    % bBox = [xminb,yminb,zminb; xmaxb,ymaxb,zmaxb];
+    xminb=bBox(1,1); yminb=bBox(1,2); zminb=bBox(1,3);   
+    xmaxb=bBox(2,1); ymaxb=bBox(2,2); zmaxb=bBox(2,3);
     % Calc Boundaries for cartesian points of interest
-    xi=ceil(min(xS)); xf=ceil(max(xS)); Nx=Ns; % xdis=abs(xi-xf);
-    yi=ceil(min(yS)); yf=ceil(max(yS)); Ny=Ns; % ydis=abs(yi-yf);
-    zi=ceil(min(zS)); zf=ceil(max(zS)); Nz=Ns; % zdis=abs(zi-zf);
+    xi=ceil(min(xS));
+    xf=ceil(max(xS)); 
+    Nx=Ns; 
+    yi=ceil(min(yS)); 
+    yf=ceil(max(yS)); 
+    Ny=Ns; 
+    zi=ceil(min(zS)); 
+    zf=ceil(max(zS)); 
+    Nz=Ns;
+    
+    xdis=abs(xi-xf); % [older version(a)]
+    ydis=abs(yi-yf); % [older version(a)] 
+    zdis=abs(zi-zf); % [older version(a)]
+    %xdis=abs(xmaxb-xminb); 
+    %ydis=abs(ymaxb-yminb); 
+    %zdis=abs(zmaxb-zminb); 
+    
     % discrete points in space 
-    x_M = linspace( xi-xdis/4, xf+xdis/4, Nx);
-    y_M = linspace( yi-ydis/4, yf+ydis/4, Ny);
-    z_M = linspace( zi-zdis/4, zf+zdis/4, Nz);
+    %{
+    % when boundaries are not defined by user
+    % [older version (a)]
+    x_M = linspace( xi-(xdis/4), xf+(xdis/4), Nx);
+    y_M = linspace( yi-(ydis/4), yf+(ydis/4), Ny);
+    z_M = linspace( zi-(zdis/4), zf+(zdis/4), Nz);
+    %}
+    % need to update this some how
+    x_M = linspace( -xdis, xdis, Nx);
+    y_M = linspace( -ydis, ydis, Ny);
+    z_M = linspace( -zdis, 2*zdis, Nz);
+    %}
+    
     [X,Y,Z]=meshgrid(x_M,y_M,z_M);
     % Initialize B-Fields matrices
     BX = zeros(Ny,Nx,Nz); 
@@ -80,6 +104,7 @@ function [X,Y,Z,BX,BY,BZ,normB] = CalcBFields_Wire_Antenna(I,xS,yS,zS,bBox,Ns)
         yP = [yP, linspace(yS(sn),yS(sn+1), NP)];
         zP = [zP, linspace(zS(sn),zS(sn+1), NP)];
     end
+    
     %% Compute B-Fields
     for yn=1:size(X,1)          % iterate y-points (points of interest)
         for xn=1:size(X,2)      % iterate x-points (points of interest)

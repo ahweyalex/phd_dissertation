@@ -60,7 +60,6 @@ function [xS,yS,zS] = constrWireAnt(h,ra,ri,phi,N,O,wT)
         start=0;
         fin = N*(2*pi) + helixSTEP/2;
         cst_xxx = start:helixSTEP:fin;
-        numel(cst_xxx)
         if(O==1) % clock wise
             xS0 = ra.*sin(cst_xxx);
             yS0 = ri.*cos(cst_xxx);
