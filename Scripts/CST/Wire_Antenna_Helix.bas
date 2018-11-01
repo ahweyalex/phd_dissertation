@@ -22,8 +22,8 @@ Sub Main
 		wT = "0.25"
 		ra = "1"
 		ri = "1"
-		phi = "30"
-		N = "10"
+		phi = "10"
+		N = "4"
 		O = "1"
 		h  = 1.1*CStr(2*CDbl(wT)*CDbl(N))
 		' MsgBox h
