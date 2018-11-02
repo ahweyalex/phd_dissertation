@@ -13,9 +13,9 @@ clear all; close all; clc;
 ra=1; ri=1; phi=10; N=4; O=1; wT=0.25; h=(1.1)*(2*wT*N);
 [xS,yS,zS] = constrWireAnt(h,ra,ri,phi,N,O,wT);
 %%
-%{
+%
 figure(1)
-h=plot3(xS,yS,zS,'o');
+h=plot3(xS,yS,zS,'-');
 xlabel('x'); ylabel('y'); zlabel('z');
 grid on; axis equal; %axis tight;
 %view(0,90)
