@@ -6,13 +6,15 @@ figure(2)
     normB=sqrt(BX.^2+BY.^2+BZ.^2);
     BXn=BX./normB; BYn=BY./normB; BZn=BZ./normB;
     quiver3(X,Y,Z,BXn,BYn,BZn,'b');
+    xlabel('x'); ylabel('y'); zlabel('z'); 
     %axis tight
     
 %%
-    %{
+%{
 figure(3)
-    quiver(Y,X,BYn,BXn);
+H=quiver(Z,X,BZn,BXn);
 
+%{
 %% Plot Bz on the volume
 figure(4), hold on, box on, grid on
 	plot3(Gamma(:,1),Gamma(:,2),Gamma(:,3),'.-r') % plot filament
@@ -32,3 +34,12 @@ figure(5), hold on, box on, grid on
     camlight left % change tube light
 %}
 end
+%}
+%%
+figure(4)
+normB=sqrt(BX.^2+BY.^2+BZ.^2);
+BXn=BX./normB; BYn=BY./normB; BZn=BZ./normB;
+% H=quiver3(X(1,:,:),Y(1,:,:),Z(1,:,:),BXn(1,:,:),BYn(1,:,:),BZn(1,:,:),'b');
+nn=25;
+H = quiver(X(nn,:,:), Z(nn,:,:), BXn(nn,:,:),BZn(nn,:,:),'b');   
+xlabel('x'); ylabel('y'); zlabel('z'); 

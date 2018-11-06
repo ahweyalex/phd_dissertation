@@ -8,15 +8,15 @@ Sub Main
 	' Set up Frequency Sweep
 	Dim Fstart As Double, Fend As Double, Fstep As Double
 	Dim Fnum As Integer, cc As Integer, F() As String
-		Fend = 126
-		Fstart = 124
+		Fend = 125
+		Fstart = 125
 		Fstep = 1
 		Fnum = Int(((Fend - Fstart)/Fstep) + 1)
 	ReDim F(Fnum)
 	SetSolver(F,Fstart,Fend,Fstep,Fnum,cc)
 
-	''2) Set current direction(path)
-	'' Create helix wire
+	'2) Set current direction(path)
+	' Create helix wire
 	Dim h As String,ra As String,ri As String,phi As String,N As String,O As String, cPathStr As String, wPathStr As String, wT As String
 		' wT = "0.00051"
 		wT = "0.25"

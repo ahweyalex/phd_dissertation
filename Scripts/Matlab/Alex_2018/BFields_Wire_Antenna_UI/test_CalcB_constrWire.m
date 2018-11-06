@@ -7,22 +7,23 @@
 % 2) constrWireAnt
 %
 clear all; close all; clc;
-
-%% testing constrWireAnt_10_25_2018
+tic;
+% testing constrWireAnt_10_25_2018
 % h=10; 
-ra=1; ri=1; phi=10; N=4; O=1; wT=0.25; h=(1.1)*(2*wT*N);
+ra=1; ri=1; phi=5; N=4; O=1; wT=0.25; h=(1.1)*(2*wT*N);
 [xS,yS,zS] = constrWireAnt(h,ra,ri,phi,N,O,wT);
-%%
+%
 %
 figure(1)
-h=plot3(xS,yS,zS,'-');
+H=plot3(xS,yS,zS,'*');
 xlabel('x'); ylabel('y'); zlabel('z');
 grid on; axis equal; %axis tight;
-%view(0,90)
+view(0,0)
 %}
 
 %% testing CalcBFields_Wire_Antenna
-I = 1; Ns = 50;
+I = 1; Nx = 80; Ny = 50; Nz = 80;
+Ns = [Nx,Ny,Nz];
 xminb=h; yminb=h; zminb=h;
 xmaxb=h; ymaxb=h; zmaxb=h;
 bBox = [xminb,yminb,zminb; xmaxb,ymaxb,zmaxb];
@@ -30,3 +31,5 @@ bBox = [xminb,yminb,zminb; xmaxb,ymaxb,zmaxb];
 
 %% Plot B-Fields
 plotBFields(X,Y,Z,BX,BY,BZ)
+
+toc;

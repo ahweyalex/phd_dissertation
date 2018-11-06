@@ -34,8 +34,8 @@
 % ------------------------------------------------------------------------
 %   Ns
 %   Description: Number of segments in space in which the B-Fields will be
-%   computed
-%   Units: [none] <scalar>
+%   computed. [Nx,Ny,Nz]
+%   Units: [none] <1by3>
 % ------------------------------------------------------------------------
 % ------------------------------------------------------------------------
 %   [[[Ouput Parameters]]]
@@ -56,13 +56,13 @@ function [X,Y,Z,BX,BY,BZ,normB] = CalcBFields_Wire_Antenna(I,xS,yS,zS,bBox,Ns)
     % Calc Boundaries for cartesian points of interest
     xi=ceil(min(xS));
     xf=ceil(max(xS)); 
-    Nx=Ns; 
+    Nx=Ns(1); 
     yi=ceil(min(yS)); 
     yf=ceil(max(yS)); 
-    Ny=Ns; 
+    Ny=Ns(2); 
     zi=ceil(min(zS)); 
     zf=ceil(max(zS)); 
-    Nz=Ns;
+    Nz=Ns(3);
     
     xdis=abs(xi-xf); % [older version(a)]
     ydis=abs(yi-yf); % [older version(a)] 
@@ -106,6 +106,7 @@ function [X,Y,Z,BX,BY,BZ,normB] = CalcBFields_Wire_Antenna(I,xS,yS,zS,bBox,Ns)
     end
     
     %% Compute B-Fields
+    count=0;
     for yn=1:size(X,1)          % iterate y-points (points of interest)
         for xn=1:size(X,2)      % iterate x-points (points of interest)
             for zn=1:size(X,3)  % iterate z-points (points of interest)
@@ -128,6 +129,8 @@ function [X,Y,Z,BX,BY,BZ,normB] = CalcBFields_Wire_Antenna(I,xS,yS,zS,bBox,Ns)
                 BX(yn,xn,zn) = BX(yn,xn,zn) + mu0*I/4/pi*sum(dBx);
                 BY(yn,xn,zn) = BY(yn,xn,zn) + mu0*I/4/pi*sum(dBy);
                 BZ(yn,xn,zn) = BZ(yn,xn,zn) + mu0*I/4/pi*sum(dBz);
+                count = count + 1;
+                % ccc = horzcat(num2str(count+1),"/" ,num2str(Nx*Ny*Nz))
             end
         end
     end

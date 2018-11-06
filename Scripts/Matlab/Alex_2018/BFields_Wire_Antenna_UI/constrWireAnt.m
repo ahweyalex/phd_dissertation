@@ -70,11 +70,23 @@ function [xS,yS,zS] = constrWireAnt(h,ra,ri,phi,N,O,wT)
             zS0 = (h*cst_xxx)./(2*pi*N);
         end
         xS0=xS0'; yS0=yS0'; zS0=zS0';
+        numel(xS0)
         % Adding "thickens" to wire structure (along current path)
         S0 = [xS0,      yS0,      zS0+wT/2;
               xS0,      yS0,      zS0-wT/2;
               xS0+wT/2, yS0+wT/2, zS0;
-              xS0-wT/2, yS0-wT/2, zS0;];
+              xS0-wT/2, yS0-wT/2, zS0;
+              % new addtions
+              xS0-wT/2, yS0-wT/2, zS0+wT/4;
+              xS0-wT/2, yS0-wT/2, zS0-wT/4;
+              xS0+wT/2, yS0+wT/2, zS0+wT/4;
+              xS0+wT/2, yS0+wT/2, zS0-wT/4;
+              % new(er) additions
+              xS0-wT/4, yS0-wT/4, zS0+wT/2;
+              xS0-wT/4, yS0-wT/4, zS0-wT/2;
+              xS0+wT/4, yS0+wT/4, zS0+wT/2;
+              xS0+wT/4, yS0+wT/4, zS0-wT/2;
+              ];
         xS = S0(:,1); yS = S0(:,2); zS = S0(:,3);
         
 end % end of constrWireAnt_10_25_2018
